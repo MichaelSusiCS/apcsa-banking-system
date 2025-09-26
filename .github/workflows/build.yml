@@ -19,7 +19,7 @@ jobs:
       - name: Compile
         run: |
           mkdir -p out
-          javac -d out $(git ls-files '*.java')
+          find . -name "*.java" -print0 | xargs -0 javac -d out
 
       - name: Smoke test (quit immediately)
         run: |
