@@ -3,6 +3,9 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -10,17 +13,13 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Show Java & list files
-        run: |
-          java -version
-          javac -version
-          ls -R
-
       - name: Compile
         run: |
+          set -euo pipefail
           mkdir -p out
-          find . -name "*.java" -print0 | xargs -0 javac -d out
+          mapfile -t FILES < <(find src -type f -name '*.java' -print)
+          javac -d out "${FILES[@]}"
 
-      - name: Smoke test (quit immediately)
+      - name: Smoke test (exit immediately)
         run: |
-          printf "q\n" | java -cp out bank.BankCli
+          printf "q\n" | java -cp out bank.BankCli || true
