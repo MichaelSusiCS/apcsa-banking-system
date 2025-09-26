@@ -3,23 +3,17 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-
       - name: Compile
         run: |
-          set -euo pipefail
+          set -e
           mkdir -p out
-          mapfile -t FILES < <(find src -type f -name '*.java' -print)
-          javac -d out "${FILES[@]}"
-
-      - name: Smoke test (exit immediately)
+          find src -type f -name '*.java' -print0 | xargs -0 javac -d out
+      - name: Smoke test
         run: |
-          printf "q\n" | java -cp out bank.BankCli || true
+          printf "q\n" | java -cp out bank.BankCli
