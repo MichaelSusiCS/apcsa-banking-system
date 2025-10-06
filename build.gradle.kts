@@ -15,7 +15,7 @@ application {
 
 dependencies {
     // BOM + Jupiter API/Engine
-    testImplementation(platform("org.junit:junit-bom:5.11.0"))
+    testImplementation(platform("org.junit:junit-bom:6.0.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 
     // REQUIRED for Gradle 8.7+ to start the JUnit Platform
